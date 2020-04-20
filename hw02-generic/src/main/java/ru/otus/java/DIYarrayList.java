@@ -57,9 +57,10 @@ public class DIYarrayList<T> implements List<T> {
 
     @Override
     public void add(int index, T element) {
-        if (index == data.length)
+        if (index == data.length) {
             data = Arrays.copyOf(data,
-                    getNewCapacity(++size));
+                    setNewCapacity(++size));
+        }
         data[index] = element;
         size = ++index;
     }
@@ -81,7 +82,7 @@ public class DIYarrayList<T> implements List<T> {
         throw new UnsupportedOperationException();
     }
 
-    private int getNewCapacity(int minCapacity) {
+    private int setNewCapacity(int minCapacity) {
         if (minCapacity < 0)
             throw new OutOfMemoryError();
         int oldCapacity = data.length;
