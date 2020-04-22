@@ -83,13 +83,15 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     private int setNewCapacity(int minCapacity) {
-        if (minCapacity < 0)
+        if (minCapacity < 0) {
             throw new OutOfMemoryError();
+        }
         int oldCapacity = data.length;
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         if (newCapacity - minCapacity <= 0) {
-            if (data == DEFAULT_CAPACITY_EMPTY_DATA)
+            if (data == DEFAULT_CAPACITY_EMPTY_DATA) {
                 return Math.max(DEFAULT_CAPACITY, minCapacity);
+            }
             return minCapacity;
         }
         return (newCapacity - MAX_ARRAY_SIZE <= 0)
@@ -164,8 +166,9 @@ public class DIYarrayList<T> implements List<T> {
     @SuppressWarnings("NullableProblems")
     @Override
     public ListIterator<T> listIterator(int index) {
-        if (index > size || index < 0)
+        if (index > size || index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
         return new DIYListIterator(index);
     }
 
@@ -203,11 +206,13 @@ public class DIYarrayList<T> implements List<T> {
         public T next() {
             checkConcurrentMod();
             int index = cursor;
-            if (index >= size)
+            if (index >= size) {
                 throw new NoSuchElementException();
+            }
             Object[] elementData = DIYarrayList.this.data;
-            if (index >= elementData.length)
+            if (index >= elementData.length) {
                 throw new ConcurrentModificationException();
+            }
             cursor = index + 1;
             return (T) elementData[lastIndex = index];
         }
@@ -238,8 +243,9 @@ public class DIYarrayList<T> implements List<T> {
 
         @Override
         public void set(T t) {
-            if (lastIndex < 0)
+            if (lastIndex < 0) {
                 throw new IllegalStateException();
+            }
             checkConcurrentMod();
 
             DIYarrayList.this.set(lastIndex, t);
@@ -257,10 +263,12 @@ public class DIYarrayList<T> implements List<T> {
             int index = cursor;
             if (index < size) {
                 final Object[] es = data;
-                if (index >= es.length)
+                if (index >= es.length) {
                     throw new ConcurrentModificationException();
-                for (; index < size && modCount == expectedModCount; index++)
+                }
+                for (; index < size && modCount == expectedModCount; index++) {
                     action.accept(elementAt(es, index));
+                }
                 cursor = index;
                 lastIndex = index - 1;
                 checkConcurrentMod();
@@ -268,8 +276,9 @@ public class DIYarrayList<T> implements List<T> {
         }
 
         final void checkConcurrentMod() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
         }
     }
 
@@ -288,13 +297,16 @@ public class DIYarrayList<T> implements List<T> {
         @SuppressWarnings("unchecked")
         @Override
         public T next() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
-            if (cursor >= size)
+            }
+            if (cursor >= size) {
                 throw new NoSuchElementException();
+            }
             Object[] elementData = DIYarrayList.this.data;
-            if (cursor >= elementData.length)
+            if (cursor >= elementData.length) {
                 throw new ConcurrentModificationException();
+            }
             cursor = cursor + 1;
             return (T) elementData[lastIndex = cursor - 1];
         }
