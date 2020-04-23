@@ -1,4 +1,4 @@
-package otus.java;
+package ru.otus.java;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashCode;
