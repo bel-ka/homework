@@ -59,7 +59,7 @@ public class DIYarrayList<T> implements List<T> {
     public void add(int index, T element) {
         if (index == data.length) {
             data = Arrays.copyOf(data,
-                    setNewCapacity(++size));
+                    setNewCapacity(size + 1));
         }
         data[index] = element;
         size = ++index;
