@@ -1,12 +1,12 @@
 package ru.otus.java.proxy;
 
 import ru.otus.java.annotations.Log;
-import ru.otus.java.test.TestLoggingImpl;
-import ru.otus.java.test.TestLoggingInterface;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class Ioc {
@@ -14,45 +14,46 @@ public class Ioc {
     private Ioc() {
     }
 
-    public static TestLoggingInterface createTestClass() {
-        InvocationHandler handler = new ProxyInvocationHandler(new TestLoggingImpl());
-        return (TestLoggingInterface) Proxy.newProxyInstance(Ioc.class.getClassLoader(),
-                new Class<?>[]{TestLoggingInterface.class}, handler);
+    public static Object createTestClass(Object object) {
+        InvocationHandler handler = new ProxyInvocationHandler(object);
+        Class<?>[] interfaces = object.getClass().getInterfaces();
+        return Proxy.newProxyInstance(Ioc.class.getClassLoader(),
+                interfaces, handler);
     }
 
     static class ProxyInvocationHandler implements InvocationHandler {
-        private final TestLoggingInterface testClass;
+        private final Object invokeClass;
+        private List<String> methodsWithLogAnnotation = new ArrayList<>();
 
-        ProxyInvocationHandler(TestLoggingImpl testClass) {
-            this.testClass = testClass;
+        ProxyInvocationHandler(Object invokeClass) {
+            this.invokeClass = invokeClass;
+
+            Stream.of(invokeClass.getClass().getDeclaredMethods())
+                    .filter(x -> x.isAnnotationPresent(Log.class))
+                    .forEach(x -> methodsWithLogAnnotation.add(x.getName()));
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             String methodName = method.getName();
-            Stream.of(testClass.getClass().getDeclaredMethods())
-                    .filter(x -> x.getName().equals(methodName) && x.isAnnotationPresent(Log.class))
-                    .findFirst()
-                    .ifPresent(implMethod ->
-                            {
-                                System.out.print("executed method: " + methodName);
-                                if (args != null) {
-                                    StringBuilder paramOfMethod = new StringBuilder();
-                                    for (Object param : args) {
-                                        paramOfMethod.append(" [").append(param.toString()).append("]");
-                                    }
-                                    System.out.print(", param:" + paramOfMethod);
-                                }
-                                System.out.print("\n");
-                            }
-                    );
-            return method.invoke(testClass, args);
+            if (methodsWithLogAnnotation.contains(methodName)) {
+                System.out.print("executed method: " + methodName);
+                if (args != null) {
+                    StringBuilder paramOfMethod = new StringBuilder();
+                    for (Object param : args) {
+                        paramOfMethod.append(" [").append(param.toString()).append("]");
+                    }
+                    System.out.print(", param:" + paramOfMethod);
+                }
+                System.out.print("\n");
+            }
+            return method.invoke(invokeClass, args);
         }
 
         @Override
         public String toString() {
             return "DemoInvocationHandler{" +
-                    "myClass=" + testClass +
+                    "myClass=" + invokeClass +
                     '}';
         }
     }
