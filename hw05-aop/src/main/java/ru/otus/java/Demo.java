@@ -9,13 +9,15 @@ import ru.otus.java.test.UserMapLoggingInterface;
 public class Demo {
     public static void main(String[] args) {
         TestLoggingInterface testObj = new TestLoggingImpl();
-        TestLoggingInterface testLogging = (TestLoggingInterface) Ioc.createTestClass(testObj);
+        TestLoggingInterface testLogging = Ioc.createTestClass(testObj);
         testLogging.calculation(1, 7);
         testLogging.subtraction(2, 5);
+        testLogging.subtraction(2, 5.0);
+        testLogging.subtraction(10, 3, 9);
         testLogging.printPi();
 
         UserMapLoggingInterface userMapObj = new UserMapLoggingImpl();
-        UserMapLoggingInterface userMapLogging = (UserMapLoggingInterface) Ioc.createTestClass(userMapObj);
+        UserMapLoggingInterface userMapLogging = Ioc.createTestClass(userMapObj);
         userMapLogging.addUserToMap("Ivan");
         userMapLogging.findUserIdInMap("Oleg");
     }

@@ -17,6 +17,16 @@ public class TestLoggingImpl implements TestLoggingInterface {
         System.out.println("Minus: " + Math.abs(param1 - param2));
     }
 
+    @Override
+    public void subtraction(int param1, double param2) {
+        System.out.println("Minus: " + Math.abs(param1 - param2));
+    }
+
+    @Override
+    public void subtraction(int param1, int param2, int param3) {
+        System.out.println("Minus: " + Math.abs(param1 - param2 - param3));
+    }
+
     @Log
     @Override
     public void printPi() {
