@@ -2,12 +2,10 @@ package ru.otus.java;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.otus.java.banknotes.Banknotes;
-import ru.otus.java.banknotes.OneHundredNominal;
-import ru.otus.java.banknotes.TenNominal;
-import ru.otus.java.banknotes.TwoThousandNominal;
+import ru.otus.java.banknotes.Banknote;
 import ru.otus.java.exception.BanknotesNotFoundException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,25 +22,32 @@ class AtmTest {
 
     @Test
     void shouldAddBanknotesToAtmCell() {
-        atm.addBanknotes(new TwoThousandNominal(), 3);
+        atm.addBanknotes(Banknote.TWO_THOUSAND, 3);
         assertEquals(6000, atm.getBalance());
     }
 
     @Test
     void shouldReturnRightBalanceWithoutBanknoteWithdrawal() {
-        atm.addBanknotes(new OneHundredNominal(), 3);
-        atm.addBanknotes(new TenNominal(), 3);
-        atm.getBanknotes(110);
-        assertEquals(220, atm.getBalance());
+        Map<Integer, Map.Entry<Banknote, Integer>> banknotesToAtm = new HashMap<>();
+        banknotesToAtm.put(1, Map.entry(Banknote.ONE_HUNDRED, 3));
+        banknotesToAtm.put(2, Map.entry(Banknote.TEN, 3));
+        atm.addBanknotes(banknotesToAtm.get(1).getKey(), banknotesToAtm.get(1).getValue());
+        atm.addBanknotes(banknotesToAtm.get(2).getKey(), banknotesToAtm.get(2).getValue());
+        int wouldGetAmount = 110;
+        atm.getBanknotes(wouldGetAmount);
+        int shouldBeBalance = banknotesToAtm.get(1).getKey().getNominal() * banknotesToAtm.get(1).getValue()
+                + banknotesToAtm.get(2).getKey().getNominal() * banknotesToAtm.get(2).getValue()
+                - wouldGetAmount;
+        assertEquals(shouldBeBalance, atm.getBalance());
     }
 
     @Test
     void shouldReturnSumInMinCountOfBanknotes() {
-        atm.addBanknotes(new TwoThousandNominal(), 1);
-        atm.addBanknotes(new OneHundredNominal(), 200);
-        Map<Banknotes, Integer> returnMap = atm.getBanknotes(2000);
+        atm.addBanknotes(Banknote.TWO_THOUSAND, 1);
+        atm.addBanknotes(Banknote.ONE_HUNDRED, 200);
+        Map<Banknote, Integer> returnMap = atm.getBanknotes(2000);
         assertEquals(1, returnMap.size());
-        assertEquals(TwoThousandNominal.class, returnMap.keySet().stream().findFirst().get().getClass());
+        assertEquals(Banknote.TWO_THOUSAND, returnMap.keySet().stream().findFirst().get());
         assertEquals(1, returnMap.values().stream().findFirst().get());
     }
 

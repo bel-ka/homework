@@ -9,15 +9,8 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
 }
 
-shadowJar {
-    archiveBaseName.set('hw06-solid')
-    archiveVersion.set('0.1')
-    archiveClassifier.set('')
-    manifest {
-        attributes 'Main-Class': 'ru.otus.java.DemoAtm'
-    }
-}
-
 test {
     useJUnitPlatform()
 }
+
+tasks.build.dependsOn tasks.test
