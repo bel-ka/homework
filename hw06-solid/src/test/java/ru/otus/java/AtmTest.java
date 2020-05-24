@@ -2,7 +2,9 @@ package ru.otus.java;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.otus.java.atm.AtmImpl;
 import ru.otus.java.banknotes.Banknote;
+import ru.otus.java.exception.AtmException;
 import ru.otus.java.exception.BanknotesNotFoundException;
 
 import java.util.HashMap;
@@ -13,11 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class AtmTest {
-    private Atm atm;
+    private AtmImpl atm;
 
     @BeforeEach
     void setUp() {
-        atm = new Atm();
+        atm = new AtmImpl();
     }
 
     @Test
@@ -55,5 +57,11 @@ class AtmTest {
     void shouldReturnNeedExceptionWhenNoBanknotesInAtm(){
         assertThrows(BanknotesNotFoundException.class,
                 () -> atm.getBanknotes(1000));
+    }
+
+    @Test
+    void shouldReturnNeedExceptionWhenNoSavedStateOfAtm(){
+        assertThrows(AtmException.class,
+                () -> atm.resetToSavedState());
     }
 }
