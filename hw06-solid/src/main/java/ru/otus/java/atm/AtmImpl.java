@@ -1,38 +1,37 @@
 package ru.otus.java.atm;
 
 import ru.otus.java.banknotes.Banknote;
-import ru.otus.java.exception.AtmException;
 import ru.otus.java.exception.BanknotesNotFoundException;
-import ru.otus.java.memento.Memento;
 import ru.otus.java.memento.Originator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class AtmImpl implements Atm, Originator {
+public class AtmImpl implements Atm {
     private final Map<Banknote, Integer> banknotesCell = new TreeMap<>(Collections.reverseOrder());
+    private Originator originator = new Originator();
 
-    private Memento memento;
-
-    public AtmImpl(AtmImpl atm) {
+    public AtmImpl(Atm atm) {
         banknotesCell.putAll(atm.getBanknotesCell());
     }
 
     public AtmImpl() {
     }
 
-    public Memento getMemento() {
-        return memento;
-    }
-
-    private Map<Banknote, Integer> getBanknotesCell() {
+    @Override
+    public Map<Banknote, Integer> getBanknotesCell() {
         return banknotesCell;
     }
 
+    @Override
     public void addBanknotes(Banknote banknote, Integer count) {
         banknotesCell.compute(banknote, (key, oldValue) -> (oldValue == null) ? count : oldValue + count);
     }
 
+    @Override
     public Map<Banknote, Integer> getBanknotes(int requiredAmount) {
         if (getBalance() < requiredAmount) {
             throwAtmException();
@@ -90,18 +89,11 @@ public class AtmImpl implements Atm, Originator {
                 '}';
     }
 
-    @Override
     public void saveState() {
-        memento = new Memento(this);
+        originator.saveState(this);
     }
 
-    @Override
     public void resetToSavedState() {
-        if (memento == null) {
-            throw new AtmException("Отсутствует ранее сохраненное состояние банкомата.");
-        } else {
-            banknotesCell.clear();
-            banknotesCell.putAll(memento.getState().getBanknotesCell());
-        }
+        originator.resetToSavedState(this);
     }
 }

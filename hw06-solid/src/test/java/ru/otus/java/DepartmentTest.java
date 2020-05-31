@@ -6,6 +6,7 @@ import ru.otus.java.atm.AtmImpl;
 import ru.otus.java.banknotes.Banknote;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class DepartmentTest {
     private Department department;
@@ -33,17 +34,16 @@ class DepartmentTest {
         department.addAtm(atm2);
         atm1.addBanknotes(Banknote.TEN, 2);
         atm2.addBanknotes(Banknote.TWO_THOUSAND, 5);
-        assertEquals(atm1.getBalance() + atm2.getBalance(), department.getBalance());
+        assertEquals(atm1.getBalance() + atm2.getBalance(), department.getBalanceOfAllAtm());
     }
 
     @Test
     void shouldSaveStateOfAtm() {
-        AtmImpl atm1 = new AtmImpl();
+        AtmImpl atm1 = spy(new AtmImpl());
         department.addAtm(atm1);
         atm1.addBanknotes(Banknote.TEN, 2);
-        assertNull(department.getAtmList().get(0).getMemento());
-        department.saveState();
-        assertNotNull(department.getAtmList().get(0).getMemento());
+        department.saveStateOfAllAtm();
+        verify(atm1, times(1)).saveState();
     }
 
     @Test
@@ -52,10 +52,10 @@ class DepartmentTest {
         atm1.addBanknotes(Banknote.TEN, 2);
         int balanceBeforeSave = atm1.getBalance();
         department.addAtm(atm1);
-        department.saveState();
+        department.saveStateOfAllAtm();
         atm1.addBanknotes(Banknote.TWO_THOUSAND, 5);
-        department.resetToSavedState();
+        department.resetStateOfAllAtm();
         assertEquals(balanceBeforeSave, atm1.getBalance());
-        assertEquals(balanceBeforeSave, department.getBalance());
+        assertEquals(balanceBeforeSave, department.getBalanceOfAllAtm());
     }
 }
