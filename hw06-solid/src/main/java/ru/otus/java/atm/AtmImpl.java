@@ -1,18 +1,37 @@
-package ru.otus.java;
+package ru.otus.java.atm;
 
 import ru.otus.java.banknotes.Banknote;
 import ru.otus.java.exception.BanknotesNotFoundException;
+import ru.otus.java.memento.Originator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class Atm {
+public class AtmImpl implements Atm {
     private final Map<Banknote, Integer> banknotesCell = new TreeMap<>(Collections.reverseOrder());
+    private Originator originator = new Originator();
 
+    public AtmImpl(Atm atm) {
+        banknotesCell.putAll(atm.getBanknotesCell());
+    }
+
+    public AtmImpl() {
+    }
+
+    @Override
+    public Map<Banknote, Integer> getBanknotesCell() {
+        return banknotesCell;
+    }
+
+    @Override
     public void addBanknotes(Banknote banknote, Integer count) {
         banknotesCell.compute(banknote, (key, oldValue) -> (oldValue == null) ? count : oldValue + count);
     }
 
+    @Override
     public Map<Banknote, Integer> getBanknotes(int requiredAmount) {
         if (getBalance() < requiredAmount) {
             throwAtmException();
@@ -47,6 +66,7 @@ public class Atm {
         );
     }
 
+    @Override
     public int getBalance() {
         return banknotesCell.entrySet().stream().mapToInt((k) -> k.getKey().getNominal() * k.getValue()).sum();
     }
@@ -60,5 +80,20 @@ public class Atm {
                                 .collect(Collectors.joining(", "))
                 )
         );
+    }
+
+    @Override
+    public String toString() {
+        return "AtmImpl{" +
+                "banknotesCell=" + banknotesCell +
+                '}';
+    }
+
+    public void saveState() {
+        originator.saveState(this);
+    }
+
+    public void resetToSavedState() {
+        originator.resetToSavedState(this);
     }
 }
