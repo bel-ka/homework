@@ -7,13 +7,10 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter@Getter
 public class PersonDTO {
-    @Setter@Getter
     private long personId;
-    @Setter@Getter
     private String firstName;
-    @Setter@Getter
     private String lastName;
-    @Setter@Getter
     private AddressDTO address;
 }

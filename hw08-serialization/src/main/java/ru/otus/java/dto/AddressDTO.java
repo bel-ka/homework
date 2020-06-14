@@ -7,9 +7,8 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter@Getter
 public class AddressDTO {
-    @Setter@Getter
     private String city;
-    @Setter@Getter
     private String country;
 }
