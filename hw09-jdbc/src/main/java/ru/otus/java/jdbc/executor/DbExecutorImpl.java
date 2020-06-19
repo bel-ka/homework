@@ -1,4 +1,4 @@
-package ru.otus.java.jdbc;
+package ru.otus.java.jdbc.executor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package ru.otus.java.jdbc;
+package ru.otus.java.jdbc.executor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
