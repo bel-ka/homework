@@ -1,17 +1,26 @@
 package ru.otus.java.helper;
 
+import java.util.Map;
+
+import static java.util.Map.entry;
+
 public class Primitives {
+    private static final Map<Object, Object> primitivesMap = Map.ofEntries(
+            entry(int.class, Integer.class),
+            entry(float.class, Float.class),
+            entry(byte.class, Byte.class),
+            entry(double.class, Double.class),
+            entry(long.class, Long.class),
+            entry(char.class, Character.class),
+            entry(boolean.class, Boolean.class),
+            entry(short.class, Short.class),
+            entry(void.class, Void.class));
+
     @SuppressWarnings("unchecked")
     public static <T> Class<T> wrap(Class<T> type) {
-        if (type == int.class) return (Class<T>) Integer.class;
-        if (type == float.class) return (Class<T>) Float.class;
-        if (type == byte.class) return (Class<T>) Byte.class;
-        if (type == double.class) return (Class<T>) Double.class;
-        if (type == long.class) return (Class<T>) Long.class;
-        if (type == char.class) return (Class<T>) Character.class;
-        if (type == boolean.class) return (Class<T>) Boolean.class;
-        if (type == short.class) return (Class<T>) Short.class;
-        if (type == void.class) return (Class<T>) Void.class;
+        if (primitivesMap.containsKey(type)) {
+            return (Class<T>) primitivesMap.get(type);
+        }
         return type;
     }
 }
