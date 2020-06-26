@@ -19,4 +19,9 @@ public class Phone {
 
     @Column(name = "number")
     private String number;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 }

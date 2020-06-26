@@ -16,8 +16,8 @@ import ru.otus.java.hibernate.sessionmanager.SessionManagerHibernate;
 import java.util.List;
 import java.util.Optional;
 
-public class DbServiceDemo {
-    private static final Logger logger = LoggerFactory.getLogger(DbServiceDemo.class);
+public class HiberDemo {
+    private static final Logger logger = LoggerFactory.getLogger(HiberDemo.class);
 
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml", User.class, Address.class, Phone.class);
@@ -26,10 +26,36 @@ public class DbServiceDemo {
         UserDao userDao = new UserDaoHibernate(sessionManager);
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
-        long id = dbServiceUser.saveUser(new User(0, "Harry", new Address(0, "Diagon Alley"), List.of(new Phone(0, "681287888"))));
+        // user create
+        User user1 = new User();
+        user1.setName("Harry");
+        Address addressU1 = new Address();
+        addressU1.setStreet("Diagon Alley");
+        user1.setAddress(addressU1);
+
+        Phone phoneU1 = new Phone();
+        phoneU1.setNumber("681287888");
+        phoneU1.setUser(user1);
+
+        user1.setPhones(List.of(phoneU1));
+
+        long id = dbServiceUser.saveUser(user1);
         Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
 
-        id = dbServiceUser.saveUser(new User(1L, "Ivan", new Address(1L,"Stroiteley"), List.of(new Phone(1L,"890887888"))));
+        // user update
+        User user2 = new User();
+        user2.setName("Ivan");
+        Address addressU2 = new Address();
+        addressU2.setStreet("Stroiteley");
+        user2.setAddress(addressU2);
+
+        Phone phoneU2 = new Phone();
+        phoneU2.setNumber("890887888");
+        phoneU2.setUser(user2);
+
+        user2.setPhones(List.of(phoneU2));
+
+        id = dbServiceUser.saveUser(user2);
         Optional<User> mayBeUpdatedUser = dbServiceUser.getUser(id);
 
         outputUserOptional("Created user", mayBeCreatedUser);
