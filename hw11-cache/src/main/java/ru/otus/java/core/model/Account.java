@@ -1,5 +1,6 @@
 package ru.otus.java.core.model;
 
+import lombok.*;
 import ru.otus.java.core.annotation.Id;
 
 @ToString

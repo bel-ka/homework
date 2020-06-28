@@ -2,6 +2,8 @@ package ru.otus.java.jdbc.mapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.java.cachehw.HwCache;
+import ru.otus.java.cachehw.MyCache;
 import ru.otus.java.helper.Primitives;
 import ru.otus.java.jdbc.exception.JdbcMapperException;
 import ru.otus.java.jdbc.executor.DbExecutorImpl;
@@ -17,6 +19,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private static final Logger logger = LoggerFactory.getLogger(JdbcMapperImpl.class);
     private final SessionManagerJdbc sessionManager;
     private final DbExecutorImpl<T> dbExecutor;
+    private final HwCache<Long, T> hwCache = new MyCache<>();
     EntityClassMetaData<T> classMetaData;
     EntitySQLMetaData sqlEntity;
 
@@ -39,6 +42,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         try {
             long id = dbExecutor.executeInsert(getConnection(), sqlEntity.getInsertSql(), values);
             logger.debug("insert with id = {}", id);
+            hwCache.put(id, objectData);
             sessionManager.commitSession();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -109,6 +113,11 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             logger.error(e.getMessage(), e);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<T> findByIdInCache(long id) {
+        return  Optional.of( (T) hwCache.get(id));
     }
 
     private Connection getConnection() {

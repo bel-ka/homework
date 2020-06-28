@@ -10,4 +10,6 @@ public interface JdbcMapper<T> {
     void insertOrUpdate(T objectData);
 
     Optional<T> findById(long id);
+
+    Optional<T> findByIdInCache(long id);
 }
