@@ -16,9 +16,8 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final List<Field> allEntityField;
     private Field idField = null;
 
-    @SuppressWarnings("unchecked")
-    public EntityClassMetaDataImpl(T object) {
-        this.entityClazz = (Class<T>) object;
+    public EntityClassMetaDataImpl(Class<T> object) {
+        this.entityClazz = object;
         allEntityField = Stream.of(entityClazz.getDeclaredFields()).collect(Collectors.toList());
     }
 

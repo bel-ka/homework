@@ -3,10 +3,9 @@ package ru.otus.java.jdbc.mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.java.cachehw.HwCache;
-import ru.otus.java.cachehw.MyCache;
 import ru.otus.java.helper.Primitives;
 import ru.otus.java.jdbc.exception.JdbcMapperException;
-import ru.otus.java.jdbc.executor.DbExecutorImpl;
+import ru.otus.java.jdbc.executor.DbExecutor;
 import ru.otus.java.jdbc.sessionmanager.SessionManagerJdbc;
 
 import java.lang.reflect.Field;
@@ -18,17 +17,18 @@ import java.util.Optional;
 public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private static final Logger logger = LoggerFactory.getLogger(JdbcMapperImpl.class);
     private final SessionManagerJdbc sessionManager;
-    private final DbExecutorImpl<T> dbExecutor;
-    private final HwCache<Long, T> hwCache = new MyCache<>();
+    private final DbExecutor<T> dbExecutor;
+    private final HwCache<String, T> hwCache;
     EntityClassMetaData<T> classMetaData;
     EntitySQLMetaData sqlEntity;
-
-    @SuppressWarnings("unchecked")
-    public JdbcMapperImpl(SessionManagerJdbc sessionManager, DbExecutorImpl<T> dbExecutor, Class<T> clazz) {
+    
+    public JdbcMapperImpl(SessionManagerJdbc sessionManager, DbExecutor<T> dbExecutor,
+                          EntityClassMetaData<T> classMetaData, HwCache<String, T> cache) {
         this.sessionManager = sessionManager;
         this.dbExecutor = dbExecutor;
-        this.classMetaData = new EntityClassMetaDataImpl<T>((T) clazz);
+        this.classMetaData = classMetaData;
         this.sqlEntity = new EntitySQLMetaDataImpl(classMetaData);
+        this.hwCache = cache;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         try {
             long id = dbExecutor.executeInsert(getConnection(), sqlEntity.getInsertSql(), values);
             logger.debug("insert with id = {}", id);
-            hwCache.put(id, objectData);
+            hwCache.put(String.valueOf(id), objectData);
             sessionManager.commitSession();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -64,6 +64,9 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         try {
             long id = dbExecutor.executeInsert(getConnection(), sqlEntity.getUpdateSql(), values);
             logger.debug("update with id = {}", id);
+            if (hwCache.get(String.valueOf(id)) != null) {
+                hwCache.put(String.valueOf(id), objectData);
+            }
             sessionManager.commitSession();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -117,7 +120,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     public Optional<T> findByIdInCache(long id) {
-        return  Optional.of( (T) hwCache.get(id));
+        return Optional.of((T) hwCache.get(String.valueOf(id)));
     }
 
     private Connection getConnection() {

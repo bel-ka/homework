@@ -2,9 +2,13 @@ package ru.otus.java;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.java.cachehw.HwCache;
+import ru.otus.java.cachehw.MyCache;
 import ru.otus.java.core.model.User;
 import ru.otus.java.h2.DataSourceH2;
 import ru.otus.java.jdbc.executor.DbExecutorImpl;
+import ru.otus.java.jdbc.mapper.EntityClassMetaData;
+import ru.otus.java.jdbc.mapper.EntityClassMetaDataImpl;
 import ru.otus.java.jdbc.mapper.JdbcMapper;
 import ru.otus.java.jdbc.mapper.JdbcMapperImpl;
 import ru.otus.java.jdbc.sessionmanager.SessionManagerJdbc;
@@ -26,7 +30,9 @@ public class DbServiceDemo {
         DbExecutorImpl<User> dbUserExecutor = new DbExecutorImpl<>();
 
         logger.info("------------------------");
-        JdbcMapper<User> jdbcUserMapper = new JdbcMapperImpl<>(sessionManager, dbUserExecutor, User.class);
+        EntityClassMetaData<User> userClassMetaData = new EntityClassMetaDataImpl<>(User.class);
+        HwCache<String, User> hwCache = new MyCache<>();
+        JdbcMapper<User> jdbcUserMapper = new JdbcMapperImpl<>(sessionManager, dbUserExecutor, userClassMetaData, hwCache);
         User userToDb = new User(1, "Ivanov", 25);
         jdbcUserMapper.insert(userToDb);
         logger.info("------------------------");
