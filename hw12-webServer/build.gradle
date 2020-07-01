@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation("ch.qos.logback:logback-classic")
+    implementation("com.h2database:h2")
+    implementation("org.hibernate:hibernate-core")
+
+    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("org.eclipse.jetty:jetty-server:9.4.27.v20200227")
+    implementation("org.eclipse.jetty:jetty-webapp:9.4.27.v20200227")
+    implementation("org.eclipse.jetty:jetty-security:9.4.27.v20200227")
+    implementation("org.freemarker:freemarker:2.3.28")
+}
