@@ -5,7 +5,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import ru.otus.java.dao.UserDao;
 import ru.otus.java.services.DBServiceUser;
 import ru.otus.java.services.TemplateProcessor;
 import ru.otus.java.services.UserAuthService;
