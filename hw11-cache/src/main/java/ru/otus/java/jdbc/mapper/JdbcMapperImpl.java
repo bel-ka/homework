@@ -19,8 +19,8 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private final SessionManagerJdbc sessionManager;
     private final DbExecutor<T> dbExecutor;
     private final HwCache<String, T> hwCache;
-    EntityClassMetaData<T> classMetaData;
-    EntitySQLMetaData sqlEntity;
+    private final EntityClassMetaData<T> classMetaData;
+    private final EntitySQLMetaData sqlEntity;
     
     public JdbcMapperImpl(SessionManagerJdbc sessionManager, DbExecutor<T> dbExecutor,
                           EntityClassMetaData<T> classMetaData, HwCache<String, T> cache) {
