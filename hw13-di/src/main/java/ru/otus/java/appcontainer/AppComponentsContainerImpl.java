@@ -13,7 +13,6 @@ import java.util.*;
 @Slf4j
 public class AppComponentsContainerImpl implements AppComponentsContainer {
     private Class<?> configClass;
-    private Object configObject;
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
@@ -24,12 +23,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
         this.configClass = configClass;
-        try {
-            this.configObject = initConfigObject();
-            findComponentMethodsInConfigClass();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            log.debug(e.getLocalizedMessage());
-        }
+        findComponentMethodsInConfigClass();
     }
 
     private void findComponentMethodsInConfigClass() {
@@ -53,12 +47,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 .sorted(Comparator.comparing(method -> method.getAnnotation(AppComponent.class).order()))
                 .forEach(method -> {
                     Parameter[] methodParameters = method.getParameters();
-                    if (methodParameters.length == 0) {
-                        initComponentObject(method);
-                    } else {
-                        Object[] arg = getObjectToParameters(methodParameters);
-                        initComponentObject(method, arg);
-                    }
+                    Object[] arg = getObjectToParameters(methodParameters);
+                    initComponentObject(method, arg);
                 });
     }
 
@@ -76,23 +66,15 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         return appComponents.stream()
                 .filter(obj -> obj.getClass().equals(clazz)
                         || (clazz.isInterface()
-                        && List.of(obj.getClass().getInterfaces()).contains(clazz))).findFirst();
-    }
-
-    private void initComponentObject(Method method) {
-        try {
-            Object objComponent = method.invoke(configObject);
-            putObjectToComponents(method, objComponent);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            log.debug(e.getLocalizedMessage());
-        }
+                        && clazz.isAssignableFrom(obj.getClass()))).findFirst();
     }
 
     private void initComponentObject(Method method, Object... arg) {
         try {
+            Object configObject = initConfigObject();
             Object objComponent = method.invoke(configObject, arg);
             putObjectToComponents(method, objComponent);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             log.debug(e.getLocalizedMessage());
         }
     }
