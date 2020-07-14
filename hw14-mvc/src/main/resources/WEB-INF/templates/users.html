@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Пользователи</title>
+    <style type="text/css">
+        thead {
+          background-color: #4c6aaf;
+          color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+<form id="create-form" th:action="@{/user/save}" th:object="${user}" th:method="post" accept-charset="utf-8">
+    <h4>Добавить нового пользователя</h4>
+    <input type="text" th:field="*{name}" name="name" value="" placeholder="Введите имя">
+    <input type="text" th:field="*{login}" name="login" value="" placeholder="Введите логин">
+    <input type="text" th:field="*{password}" name="password" value="" placeholder="Введите пароль">
+    <button type="submit">Сохранить</button>
+</form>
+
+<h4>Список пользователей</h4>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 100px">Логин</td>
+        <td style="width: 100px">Пароль</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.login}"></td>
+        <td th:text="${user.password}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
