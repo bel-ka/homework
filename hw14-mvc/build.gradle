@@ -1,0 +1,29 @@
+plugins {
+    id 'war'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation("ch.qos.logback:logback-classic")
+    implementation("com.google.code.gson:gson:2.8.6")
+
+    implementation("com.h2database:h2")
+    implementation("org.hibernate:hibernate-core")
+
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-webmvc")
+    implementation("org.springframework:spring-web")
+
+    implementation("org.thymeleaf:thymeleaf")
+    implementation("org.thymeleaf:thymeleaf-spring5")
+    providedCompile("javax.servlet:javax.servlet-api")
+}
+
+war {
+    archiveName 'app.war'
+    from 'src/main/resources'
+}
