@@ -23,7 +23,7 @@ public class UserController {
         List<User> users = dbServiceUser.getUsers();
         model.addAttribute("users", users);
         model.addAttribute("user", new User());
-        return "users.html";
+        return "users";
     }
 
     @PostMapping("/user/save")
