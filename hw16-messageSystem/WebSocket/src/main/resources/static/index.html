@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Пользователи</title>
+    <style type="text/css">
+        thead {
+          background-color: #4c6aaf;
+          color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+    <script src="/useWS.js"></script>
+</head>
+
+<body>
+<br />
+<div>
+    <button id="connect" onclick="connect()">Connect</button>
+    <button id="disconnect" onclick="disconnect()" disabled="disabled">Disconnect</button>
+</div>
+<br/>
+<form id="create-form" accept-charset="utf-8">
+    <h4>Добавить нового пользователя</h4>
+    <input type="text" id="userName" value="" placeholder="Введите имя">
+    <input type="text" id="userLogin" value="" placeholder="Введите логин">
+    <input type="text" id="userPassword" value="" placeholder="Введите пароль">
+    <button type="button" id="send" onclick="sendMsg()">Сохранить</button>
+</form>
+
+<div id="usersList" style="display: none">
+<h4>Список пользователей</h4>
+<table style="width: 400px" id="usersTable">
+    <thead>
+    <tr>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 100px">Логин</td>
+        <td style="width: 100px">Пароль</td>
+    </tr>
+    </thead>
+    <tbody id="usersStr">
+    </tbody>
+</table>
+</div>
+</body>
+</html>
