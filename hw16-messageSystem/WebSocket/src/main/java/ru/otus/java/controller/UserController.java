@@ -18,10 +18,7 @@ public class UserController {
     @MessageMapping("/chat.addUser")
     @SendTo("/topic/users")
     public User userSave(User user) {
-        frontendService.saveUser(user, callbackUser -> {
-            logger.info("got callbackUser:{}", callbackUser);
-            user.setId(callbackUser.getId());
-        });
+        frontendService.saveUser(user, callbackUser -> logger.info("got callbackUser:{}", callbackUser));
         return user;
     }
 }
