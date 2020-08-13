@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import ru.otus.java.model.User;
 import ru.otus.java.services.FrontendService;
@@ -16,9 +15,7 @@ public class UserController {
     private final FrontendService frontendService;
 
     @MessageMapping("/chat.addUser")
-    @SendTo("/topic/users")
-    public User userSave(User user) {
+    public void userSave(User user) {
         frontendService.saveUser(user, callbackUser -> logger.info("got callbackUser:{}", callbackUser));
-        return user;
     }
 }

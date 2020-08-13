@@ -3,6 +3,7 @@ package ru.otus.java.services.handlers;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import ru.otus.java.model.User;
 import ru.otus.java.services.DBServiceUser;
 import ru.otus.messagesystem.RequestHandler;
@@ -12,6 +13,7 @@ import ru.otus.messagesystem.message.MessageHelper;
 
 import java.util.Optional;
 
+@Component
 @AllArgsConstructor
 public class GetUserDataRequestHandler implements RequestHandler<User> {
     private static final Logger logger = LoggerFactory.getLogger(GetUserDataRequestHandler.class);
