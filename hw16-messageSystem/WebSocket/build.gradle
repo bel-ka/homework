@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    implementation project(':hw16-messageSystem:MessageSystem')
+
+    implementation("ch.qos.logback:logback-classic")
+    implementation("com.google.code.gson:gson:2.8.6")
+
+    implementation("com.h2database:h2")
+    implementation("org.hibernate:hibernate-core")
+
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+
+    implementation("org.webjars:jquery:2.2.4")
+    implementation("org.webjars:sockjs-client:1.1.2")
+    implementation("org.webjars:stomp-websocket:2.3.3-1")
+}
